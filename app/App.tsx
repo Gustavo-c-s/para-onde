@@ -100,86 +100,89 @@ export default function Home() {
 
   return (
     <TouchableWithoutFeedback onPress={handleHomePress}>
-    <View style={styles.container}>
-      <View style={styles.buscar}>{/* Barra de busca */}
-        <GooglePlacesAutocomplete
-          placeholder='Onde você quer ir?'
-          onPress={(data, details = null) => {
-            setDestination({
-              latitude: details?.geometry.location.lat,
-              longitude: details?.geometry.location.lng,
-              latitudeDelta: 0.005,
-              longitudeDelta: 0.005,
-            });
-            setShowDestinationMarker(false);
-          }}
-          query={{
-            key: tsconfig.keyapi,
-            language: 'pt-br',
-          }}
-          enablePoweredByContainer={false}
-          fetchDetails={true}
-          styles={{ listView: { height: 100, position:'absolute',top:45,} }}
-        />
-       
-      </View>
-      {/* Botão para retornar ao marcador */}
-      <TouchableOpacity style={styles.returnButton} onPress={returnToMarker}>
-        <Image source={require('../assets/images/reposiciona.png')} style={styles.buttonImage}></Image>
-      </TouchableOpacity>
-      {/* Mapa */}
-      {location && (
-        <MapView
-          ref={mapRef}
-          style={styles.map}
-          initialRegion={estouaqui || undefined}
-          
-          followsUserLocation={true} >
-
-          {/* Marcador da posição atual */}
-          <Marker
-            title='Estou aqui'
-            coordinate={{
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
+      <View style={styles.container}>
+        <View style={styles.buscar}>{/* Barra de busca */}
+          <GooglePlacesAutocomplete
+            placeholder='Onde você quer ir?'
+            onPress={(data, details = null) => {
+              setDestination({
+                latitude: details?.geometry.location.lat,
+                longitude: details?.geometry.location.lng,
+                latitudeDelta: 0.005,
+                longitudeDelta: 0.005,
+              });
+              setShowDestinationMarker(false);
             }}
+            query={{
+              key: tsconfig.keyapi,
+              language: 'pt-br',
+              types: 'geocode',
+            }}
+            enablePoweredByContainer={false}
+            fetchDetails={true}
+            styles={{ listView: { height: 100, position: 'absolute', top: 45,  } }}
+            nearbyPlacesAPI='GooglePlacesSearch'
+            
           />
-          {/* Renderiza o marcador de destino */}
-          {renderDestinationMarker()}
-          {/* Renderiza o trajeto até o destino */}
-          {destination && (
-            <MapViewDirections
-              origin={{
+
+        </View>
+        {/* Botão para retornar ao marcador */}
+        <TouchableOpacity style={styles.returnButton} onPress={returnToMarker}>
+          <Image source={require('../assets/images/reposiciona.png')} style={styles.buttonImage}></Image>
+        </TouchableOpacity>
+        {/* Mapa */}
+        {location && (
+          <MapView
+            ref={mapRef}
+            style={styles.map}
+            initialRegion={estouaqui || undefined}
+
+            followsUserLocation={true} >
+
+            {/* Marcador da posição atual */}
+            <Marker
+              title='Estou aqui'
+              coordinate={{
                 latitude: location.coords.latitude,
                 longitude: location.coords.longitude,
               }}
-              destination={destination}
-              apikey={tsconfig.keyapi}
-              strokeWidth={5}
-              strokeColor='#002ec4'
-              onReady={(result) => {
-                // Ajusta a visualização do mapa para incluir o trajeto
-                mapRef.current?.fitToCoordinates(result.coordinates, {
-                  edgePadding: { top: 50, bottom: 50, left: 50, right: 50 },
-                });
-                // Define a distância e a duração com base nos resultados
-                setDistance(result.distance);
-                setDuration(result.duration);
-                setShowDestinationMarker(true);
-              }}
             />
-          )}
-        </MapView>
-      )}
-      
-       {/* Exibe informações sobre a distância e o tempo estimado */}
-        { distance !== null && duration !== null && (
+            {/* Renderiza o marcador de destino */}
+            {renderDestinationMarker()}
+            {/* Renderiza o trajeto até o destino */}
+            {destination && (
+              <MapViewDirections
+                origin={{
+                  latitude: location.coords.latitude,
+                  longitude: location.coords.longitude,
+                }}
+                destination={destination}
+                apikey={tsconfig.keyapi}
+                strokeWidth={5}
+                strokeColor='#002ec4'
+                onReady={(result) => {
+                  // Ajusta a visualização do mapa para incluir o trajeto
+                  mapRef.current?.fitToCoordinates(result.coordinates, {
+                    edgePadding: { top: 50, bottom: 50, left: 50, right: 50 },
+                  });
+                  // Define a distância e a duração com base nos resultados
+                  setDistance(result.distance);
+                  setDuration(result.duration);
+                  setShowDestinationMarker(true);
+                }}
+              />
+            )}
+          </MapView>
+        )}
+
+        {/* Exibe informações sobre a distância e o tempo estimado */}
+        {distance !== null && duration !== null && (
           <View style={styles.infoContanier}>
             <Text style={styles.infoText}>Distância: {distance.toFixed(2)} km</Text>
             <Text style={styles.infoText}>Tempo estimado: {duration.toFixed(0)} minutos</Text>
           </View>
         )}
-    </View>
+      </View>
     </TouchableWithoutFeedback>
   );
 }

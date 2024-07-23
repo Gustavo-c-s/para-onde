@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#007564',
+    backgroundColor: '#fff',
     flex: 1,
     borderRadius: 10, 
     overflow: 'hidden',
@@ -14,14 +14,17 @@ export const styles = StyleSheet.create({
   map: {
     flex: 1,
     width: '100%',
+    height:'100%',
   },
 
   buscar: {
-    alignSelf:"center",
-    zIndex: 1,
-    flex: .07,
-    width: '99%',
     
+    zIndex: 1,
+    flex: .065,
+    width: '100%',
+    borderWidth:5 ,
+    borderColor: '#000000',
+    borderRadius:10,
   },
 
   buttontext: {
